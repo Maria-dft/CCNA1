@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCNA1 ITNv7 - Entraînement Examen Final</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .menu-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .menu-section h3 {
+            color: #2a5298;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .menu-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .quiz-container {
+            display: none;
+            padding: 30px;
+        }
+
+        .quiz-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .quiz-info {
+            flex: 1;
+        }
+
+        .back-menu-btn {
+            position: sticky;
+            top: 20px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .back-menu-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background: #5a6268;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .answer-option {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .answer-option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .answer-option.selected {
+            border-color: #667eea;
+            background: #e7e9fc;
+        }
+
+        .answer-option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .answer-option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .quiz-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .score-display {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2a5298;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .feedback {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .menu {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 CCNA 1 ITNv7</h1>
+            <p>Entraînement Examen Final - 161 Questions</p>
+        </div>
+
+        <div id="menuScreen" class="menu">
+            <div class="menu-section">
+                <h3>📚 Partie 1 (Modules 1-8)</h3>
+                <button class="menu-btn" onclick="startQuiz(1, 30)">Questions 1-30 (30 questions)</button>
+                <button class="menu-btn" onclick="startQuiz(31, 60)">Questions 31-60 (30 questions)</button>
+                <button class="menu-btn" onclick="startQuiz(61, 90)">Questions 61-90 (30 questions)</button>
+                <button class="menu-btn" onclick="startQuiz(1, 90)">Questions 1-90 - Révision complète (90 questions)</button>
+            </div>
+
+            <div class="menu-section">
+                <h3>📖 Partie 2 (Modules 9-17)</h3>
+                <button class="menu-btn" onclick="startQuiz(91, 120)">Questions 91-120 (30 questions)</button>
+                <button class="menu-btn" onclick="startQuiz(121, 140)">Questions 121-140 (20 questions)</button>
+                <button class="menu-btn" onclick="startQuiz(141, 161)">Questions 141-161 (21 questions)</button>
+                <button class="menu-btn" onclick="startQuiz(91, 161)">Questions 91-161 - Révision complète (71 questions)</button>
+            </div>
+
+            <div class="menu-section" style="grid-column: 1 / -1;">
+                <h3>🎯 Révision Générale</h3>
+                <button class="menu-btn" onclick="startQuiz(1, 161)" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">Questions 1-161 - EXAMEN COMPLET (161 questions)</button>
+            </div>
+        </div>
+
+        <div id="quizScreen" class="quiz-container">
+            <div class="quiz-header">
+                <div class="quiz-info">
+                    <div class="score-display">Score: <span id="score">0</span>/<span id="total">0</span></div>
+                    <div>Question <span id="currentQ">1</span> sur <span id="totalQ">30</span></div>
+                </div>
+                <button class="back-menu-btn" onclick="showMenu()">← Retour au menu</button>
+            </div>
+
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+            </div>
+
+            <div id="questionCard" class="question-card"></div>
+
+            <div id="feedback" class="feedback" style="display: none;"></div>
+
+            <div class="quiz-controls">
+                <button id="validateBtn" class="btn btn-primary" onclick="validateAnswer()">Valider la réponse</button>
+                <button id="skipBtn" class="btn btn-secondary" onclick="skipQuestion()">Passer →</button>
+                <button id="nextBtn" class="btn btn-primary" onclick="nextQuestion()" style="display: none;">Question suivante</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {q: "Un administrateur a défini un compte d'utilisateur local avec un mot de passe secret sur le routeur R1 pour être utiliser avec SSH. Quelles sont les trois étapes supplémentaires nécessaires pour configurer R1 pour accepter uniquement les connexions SSH chiffrées?", a: ["Activez les sessions SSH entrantes à l'aide des commandes de ligne VTY.", "Configurer le nom de domaine IP.", "Générer les clés SSH."], w: ["Générez des clés pré-partagées bidirectionnelles.", "Configurez DNS sur le routeur.", "Activez les sessions Telnet entrantes à l'aide des commandes de ligne VTY."]},
+            {q: "Que sont les protocoles propriétaires?", a: ["Des protocoles développés par des entreprises qui contrôlent leur définition et leur fonctionnement"], w: ["Des protocoles qui peuvent être librement utilisés par toute entreprise", "Un ensemble de protocoles connus sous le nom de suite TCP/IP", "Des protocoles développés par des organismes privés"]},
+            {q: "Un administrateur réseau ajoute un nouveau réseau local à une filiale. Le nouveau réseau local doit prendre en charge 4 périphériques connectés. Quel est le plus petit masque réseau que l'administrateur réseau peut utiliser pour le nouveau réseau?", a: ["255.255.255.248"], w: ["255.255.255.224", "255.255.255.128", "255.255.255.192"]},
+            {q: "À quoi sert le glissement de fenêtre TCP?", a: ["À demander à une source de réduire la vitesse à laquelle elle transmet les données"], w: ["À mettre fin à une communication une fois la transmission complète", "À informer une source qu'elle doit retransmettre les données", "À s'assurer que les segments parviennent dans l'ordre"]},
+            {q: "Des données sont envoyées depuis un ordinateur source vers un serveur de destination. Quelles sont les trois affirmations qui décrivent la fonction TCP ou UDP dans cette situation?", a: ["Le champ Port source identifie l'application ou le service actif qui traitera les données", "Des segments UDP sont encapsulés dans des paquets IP pour le transport", "Le numéro de port de destination UDP identifie l'application ou le service du serveur"], w: ["Le processus TCP sélectionne le port de destination de façon aléatoire", "Le numéro de port source TCP identifie l'hôte émetteur", "TCP est le protocole le plus adapté pour une surcharge réseau faible"]},
+            {q: "Un serveur reçoit un paquet client. Le numéro de port de destination du paquet est 69. Quelle application de service le client demande-t-il?", a: ["TFTP"], w: ["DNS", "SMTP", "DHCP"]},
+            {q: "Quelle caractéristique décrit un cheval de Troie?", a: ["logiciel ou code malveillant s'exécutant sur un périphérique final"], w: ["l'utilisation d'informations d'identification volées", "une attaque qui ralentit ou bloque un périphérique", "un périphérique réseau qui filtre l'accès"]},
+            {q: "Quels sont les deux problèmes qui peuvent être causés par un grand nombre de requêtes ARP et de messages de réponse?", a: ["Tous les messages de requête ARP doivent être traités par tous les nœuds", "La requête ARP est envoyée en tant que diffusion et inondera l'ensemble du sous-réseau"], w: ["Les commutateurs sont surchargés car ils concentrent tout le trafic", "Le réseau peut être saturé à cause de la charge utile importante", "Un grand nombre de messages ARP ralentissent le processus de commutation"]},
+            {q: "Quelle commande peut être utilisée sur un PC Windows pour afficher la configuration IP de cet ordinateur?", a: ["ipconfig"], w: ["ping", "show ip interface brief", "show interfaces"]},
+            {q: "Comment la commande service password-encryption améliore-t-elle la sécurité des mots de passe sur des routeurs et des commutateurs Cisco?", a: ["Elle chiffre les mots de passe qui sont stockés dans des fichiers de configuration"], w: ["Elle demande à l'utilisateur d'entrer des mots de passe chiffrés", "Elle nécessite que des mots de passe soient utilisés avec Telnet", "Elle chiffre les mots de passe lorsqu'ils sont transmis"]},
+            {q: "Quel mécanisme est utilisé par un routeur pour empêcher un paquet IPv4 reçu de voyager sans fin sur un réseau?", a: ["Il décrémente la valeur du champ TTL de 1 et si le résultat est 0, il rejette le paquet"], w: ["Il vérifie la valeur TTL et si elle est égale à 0, il rejette", "Il incrémente la valeur TTL de 1 et si le résultat est 100", "Il vérifie la valeur TTL et si elle est égale à 100"]},
+            {q: "Quel service est fourni par HTTPS?", a: ["Utilise le cryptage pour sécuriser l'échange de texte, d'images graphiques, de sons et de vidéos sur le Web"], w: ["Traduit des noms de domaines en adresses IP", "Permet l'accès à distance aux périphériques réseau", "Utilise le chiffrement pour fournir un accès distant sécurisé"]},
+            {q: "Quelles sont les deux déclarations qui décrivent les caractéristiques d'une table de routage IPv4 sur un routeur?", a: ["Il stocke des informations sur les chemins dérivés des interfaces de routeur actives", "Si une route statique par défaut est configurée, une entrée sera incluse avec le code source S"], w: ["La table de routage répertorie les adresses MAC", "S'il existe deux chemins possibles, le chemin avec la valeur métrique la plus élevée est inclus", "Les interfaces connectées directement ont deux codes: C et S"]},
+            {q: "Quelle valeur, qui se trouve dans un champ d'en-tête IPv4, est diminuée par chaque routeur qui reçoit un paquet?", a: ["Time To Live (durée de vie)"], w: ["Décalage du fragment", "Longueur d'en-tête", "Services différenciés"]},
+            {q: "La commande de configuration globale ip default-gateway 172.16.100.1 est appliquée sur un commutateur. Quel est l'effet de cette commande?", a: ["Le commutateur peut être géré à distance à partir d'un hôte sur un autre réseau"], w: ["Le commutateur est limité à l'envoi et à la réception de trames vers la passerelle", "Le commutateur aura une interface de gestion avec l'adresse 172.16.100.1", "Le commutateur peut communiquer avec d'autres hôtes du réseau 172.16.100.0"]},
+            {q: "Un nouvel administrateur de réseau a été invité à saisir un message de bannière sur un appareil Cisco. Quel est le moyen le plus rapide pour vérifier si la bannière est correctement configurée?", a: ["Quittez le mode d'exécution privilégié et appuyez sur Enter"], w: ["Quittez le mode de configuration globale", "Éteignez puis rallumez le téléphone", "Redémarrez l'appareil"]},
+            {q: "Quelle méthode est utilisée pour gérer l'accès avec gestion des conflits sur un réseau sans fil?", a: ["CSMA/CA"], w: ["Classement des priorités", "CSMA/CD", "Passage de jeton"]},
+            {q: "Parmi les caractéristiques suivantes, lesquelles sont des caractéristiques du processus CSMA/CD?", a: ["Tous les périphériques ont accès aux données transitant par le support réseau", "Suite à la détection d'une collision, les hôtes peuvent tenter de reprendre après un délai aléatoire", "Un périphérique est à l'écoute du support et attend qu'il ne soit plus occupé"], w: ["Un signal d'encombrement indique que la collision a été résolue", "Les périphériques peuvent se voir attribuer une priorité de transmission supérieure", "Le périphérique doté d'un jeton électronique est le seul autorisé à transmettre"]},
+            {q: "Quel champ de trame est créé par un nœud source et utilisé par un nœud de destination pour s'assurer qu'un signal de données transmis n'a pas été modifié?", a: ["Champ Séquence de contrôle de trame"], w: ["champ de processus de correction d'erreur", "Protocole UDP", "Champ de contrôle de flux"]},
+            {q: "Quelle technologie sans fil a des besoins en termes de consommation d'énergie et de débit des données qui la rendent populaire dans les applications domotiques?", a: ["ZigBee"], w: ["Wi-Fi", "LoRaWAN", "5G"]},
+            {q: "Un administrateur réseau conçoit la structure d'un nouveau réseau sans fil. Quels points problématiques doivent être pris en compte lors de la conception d'un réseau sans fil?", a: ["Options de mobilité", "Zone de couverture", "Sécurité"], w: ["Câblage étendu", "Collision de paquet", "Perturbation"]},
+            {q: "Un administrateur réseau souhaite avoir le même masque de sous-réseau pour tous les réseaux d'un petit site. Le site a: Téléphones IP – 22 adresses, PC – 20 adresses, Imprimantes – 2 adresses, Scanners – 2 adresses. L'administrateur réseau utilise 192.168.10.0/24. Quel masque de sous-réseau permettrait d'utiliser de manière optimale les adresses disponibles?", a: ["255.255.255.224"], w: ["255.255.255.252", "255.255.255.248", "255.255.255.192"]},
+            {q: "Les utilisateurs se plaignent de délais allongés lors de l'authentification et de l'accès aux ressources réseau à certains moments de la semaine. Quel type d'information les ingénieurs réseau doivent-ils vérifier?", a: ["Les performances de référence du réseau"], w: ["Les enregistrements et messages syslog", "Le résultat de la commande debug et les captures de paquets", "Les fichiers de configuration réseau"]},
+            {q: "Un groupe de PC Windows se trouvant sur un nouveau sous-réseau a été ajouté à un réseau Ethernet. Lors de tests de connectivité, un technicien découvre que ces ordinateurs peuvent accéder aux ressources du réseau local, mais pas à celles d'Internet. Pour résoudre le problème, quels sont les trois utilitaires et commandes d'interface de ligne de commande Windows qui fourniront les informations nécessaires?", a: ["ipconfig", "ping", "nslookup"], w: ["telnet", "tracert", "netsh interface ipv6 show neighbor"]},
+            {q: "Quel type de serveur s'appuie sur des types d'enregistrements tels que A, NS, AAAA et MX pour fournir des services?", a: ["DNS"], w: ["Web", "fichier", "les e-mails"]},
+            {q: "Un technicien réussit à envoyer une requête ping pour l'adresse IP du serveur d'une entreprise distante, mais pas pour l'adresse URL de ce même serveur web. Quelle commande doit-il exécuter pour diagnostiquer ce problème?", a: ["nslookup"], w: ["tracert", "ipconfig", "netstat"]},
+            {q: "Quelles propositions relatives aux adresses IP et MAC dans le cadre de la transmission des données si NAT n'est pas impliquée sont exactes?", a: ["Les adresses IP de destination d'un en-tête de paquet restent les mêmes tout au long du chemin", "Les adresses MAC source et de destination ont une signification locale et changent chaque fois qu'une trame passe d'un réseau local à un autre"], w: ["Chaque fois qu'une trame est encapsulée avec une nouvelle adresse MAC de destination, une nouvelle adresse IP est nécessaire", "Les adresses MAC de destination ne changent jamais dans une trame qui traverse sept routeurs", "Un paquet qui a traversé quatre routeurs a modifié l'adresse IP de destination quatre fois"]},
+            {q: "Quel avantage présente l'utilisation du cloud computing dans les réseaux?", a: ["L'entreprise améliore les capacités de son réseau sans investissement supplémentaire dans une infrastructure"], w: ["Les utilisateurs finaux utilisent leurs propres outils pour accéder aux informations", "Les technologies sont intégrées à des appareils quotidiens", "Un réseau domestique utilise le câblage électrique existant"]},
+            {q: "Quelles sont les fonctions d'ARP?", a: ["Lorsqu'un hôte encapsule un paquet dans une trame, il fait référence à la table des adresses MAC", "Si un hôte est prêt à envoyer un paquet à un périphérique de destination locale et dispose de l'adresse IP mais pas l'adresse MAC, il génère une diffusion ARP"], w: ["Si le périphérique qui reçoit une requête ARP dispose d'une adresse IPv4 de destination, il renvoie une réponse ARP", "Si aucun périphérique ne répond à la requête ARP, le noeud d'origine diffuse le paquet", "Une requête ARP est envoyée à tous les périphériques et contient l'adresse IP et l'adresse MAC de multidiffusion"]},
+            {q: "Quelles couches du modèle OSI équivalent à la couche application du modèle TCP/IP?", a: ["application", "session", "présentation"], w: ["réseau", "transport", "liaison de données"]},
+            {q: "Quel service est fourni par Internet Messenger?", a: ["Une application qui permet les discussions en ligne en temps réel entre les utilisateurs distants"], w: ["Traduit des noms de domaines en adresses IP", "Utilise le cryptage pour fournir un accès distant sécurisé", "Permet l'accès à distance aux périphériques"]},
+            {q: "Quelles commandes peuvent être utilisées sur un hôte Windows pour afficher la table de routage?", a: ["netstat -r", "route print"], w: ["show ip route", "tracert", "netstat -s"]},
+            {q: "Quel scénario décrit une fonction fournie par la couche transport?", a: ["Un étudiant a deux fenêtres de navigateur Web ouvertes pour accéder à deux sites web. La couche transport s'assure que la page web appropriée est envoyée vers la fenêtre de navigateur appropriée"], w: ["Un employé accède à un serveur Web. La couche transport formate l'écran", "Un étudiant regarde un film. Le film et le son sont codés dans l'en-tête", "Un étudiant utilise un téléphone VoIP. L'identifiant unique est une adresse de couche transport"]},
+            {q: "Que signifie le terme «atténuation» dans la communication de données?", a: ["perte de puissance du signal à mesure que la distance augmente"], w: ["temps pour qu'un signal atteigne sa destination", "fuite de signaux d'une paire de câbles à une autre", "renforcement d'un signal par un dispositif de mise en réseau"]},
+            {q: "Que se passe-t-il si l'adresse de la passerelle par défaut n'est pas correctement configurée sur un hôte?", a: ["L'hôte ne peut pas communiquer avec les hôtes situés sur d'autres réseaux"], w: ["Le commutateur ne transfère pas les paquets initiés par l'hôte", "L'hôte ne peut pas communiquer avec les autres hôtes du réseau local", "L'hôte doit utiliser ARP pour déterminer l'adresse de la passerelle"]},
+            {q: "Les utilisateurs signalent que l'accès réseau est lent. Après avoir questionné les employés, l'administrateur réseau a découvert qu'un employé a téléchargé un programme de numérisation tiers pour l'imprimante. Quel type de malware peut ralentir les performances du réseau?", a: ["ver"], w: ["phishing", "virus", "courrier indésirable"]},
+            {q: "Quelle est la conséquence de la configuration d'un routeur avec la commande de configuration globale ipv6 unicast-routing?", a: ["Les interfaces de routeur activées IPv6 commencent à envoyer des messages d'annonces de routeur ICMPv6"], w: ["Il crée statiquement une adresse monodiffusion globale sur ce routeur", "Toutes les interfaces du routeur seront automatiquement activées", "Chaque interface de routeur génère une adresse link-local IPv6"]},
+            {q: "Comment la commande service password-encryption améliore-t-elle la sécurité?", a: ["Elle chiffre les mots de passe qui sont stockés dans des fichiers de configuration de routeur et de commutateur"], w: ["Elle demande à l'utilisateur d'entrer des mots de passe chiffrés pour obtenir un accès console", "Elle nécessite que des mots de passe soient utilisés lors d'une connexion distante avec Telnet", "Elle chiffre les mots de passe lorsqu'ils sont transmis sur le réseau"]},
+            {q: "Trois employés de banque utilisent le réseau d'entreprise. Le premier employé utilise un navigateur Web pour afficher une page web. Le deuxième accède à la base de données pour effectuer des transactions financières. Le troisième participe à une conférence audio en direct. Si la qualité de service est implémentée, quelles seront les priorités?", a: ["conférence audio, transactions financières, page Web"], w: ["transactions financières, page Web, conférence audio", "conférence audio, page Web, transactions financières", "transactions financières, conférence audio, page Web"]},
+            {q: "Un administrateur réseau ajoute un nouveau réseau local à une filiale. Le nouveau réseau local doit prendre en charge 200 périphériques connectés. Quel est le plus petit masque réseau que l'administrateur réseau peut utiliser pour le nouveau réseau?", a: ["255.255.255.0"], w: ["255.255.255.192", "255.255.255.224", "255.255.255.240"]},
+            {q: "Qu'est-ce qu'une fonction de la couche de liaison de données?", a: ["prévoit l'échange de trames sur un média local commun"], w: ["fournit des données entre deux applications", "fournit une livraison de bout en bout de données entre les hôtes", "fournit la mise en forme des données"]},
+            {q: "Un hôte tente d'envoyer un paquet à un périphérique sur un segment du réseau local distant, mais il n'y a actuellement aucun mappage dans son cache ARP. Comment le périphérique obtient-il une adresse MAC de destination?", a: ["Il envoie une requête ARP pour l'adresse MAC de la passerelle par défaut"], w: ["Il envoie la trame avec une adresse MAC de diffusion", "Il envoie une requête au serveur DNS pour l'adresse MAC de destination", "Il envoie la trame et utilise sa propre adresse MAC comme destination"]},
+            {q: "Quelle méthode de commutation supprime les trames qui ne passent pas avec succès le contrôle FCS?", a: ["commutation par « stockage et retransmission »"], w: ["commutation « cut-through »", "commutation sans frontières", "mise en mémoire tampon des ports d'entrée"]},
+            {q: "Quel est l'avantage pour les petites entreprises d'adopter IMAP au lieu de POP?", a: ["Les messages sont stockés sur les serveurs de messagerie jusqu'à ce qu'ils soient manuellement supprimés sur le client de messagerie"], w: ["IMAP envoie et récupère les e-mails, tandis que POP récupère uniquement", "Quand l'utilisateur se connecte à un serveur POP, des copies sont conservées brièvement", "POP permet uniquement au client de stocker les messages de façon centralisée"]},
+            {q: "Un utilisateur se plaint qu'une page Web externe prend plus de temps que la normale pour se charger. La page Web finit par se charger. Quel outil le technicien doit-il utiliser avec les privilèges d'administrateur pour localiser le problème?", a: ["tracert"], w: ["nslookup", "ping", "ipconfig /displaydns"]},
+            {q: "Quelle plage d'adresses link-local peut être attribuée à une interface IPv6?", a: ["FE80::/10"], w: ["FEC0::/10", "FF00::/8", "FDEE::/7"]},
+            {q: "Un serveur reçoit un paquet client. Le numéro de port de destination du paquet est 22. Quelle application de service le client demande-t-il?", a: ["SSH"], w: ["TFTP", "DHCP", "DNS"]},
+            {q: "Quelles sont les deux fonctions d'exécution sur la sous-couche LLC de la couche de liaison de données OSI pour faciliter la communication Ethernet?", a: ["Place les informations dans la trame qui indique le protocole de couche réseau encapsulé pour la trame", "permet à IPv4 et IPv6 d'utiliser le même support physique"], w: ["intègre des flux de couche 2 entre 10 Gigabit Ethernet sur fibre et 1 Gigabit Ethernet sur cuivre", "met en oeuvre CSMA/CD sur un support semi-duplex partagé hérité", "Met en œuvre un processus de délimitation des champs dans une trame Ethernet 2"]},
+            {q: "Citez deux caractéristiques communes aux protocoles TCP et UDP", a: ["La numérotation des ports", "L'utilisation de sommes de contrôle"], w: ["Connexion en trois étapes", "La possibilité de transmette des données voix numérisées", "Une communication sans connexion"]},
+            {q: "Un administrateur réseau ajoute un nouveau réseau local à une filiale. Le nouveau réseau local doit prendre en charge 61 périphériques connectés. Quel est le plus petit masque réseau?", a: ["255.255.255.192"], w: ["255.255.255.224", "255.255.255.128", "255.255.255.0"]},
+            {q: "Un utilisateur tente sans succès d'accéder à http://www.cisco.com/. Quelles sont les deux valeurs de configuration à définir sur l'hôte pour autoriser cet accès?", a: ["Serveur DNS", "Passerelle par défaut"], w: ["Adresse MAC d'origine", "Numéro du port source", "Serveur HTTP"]},
+            {q: "Quel service est fourni par DHCP?", a: ["Affecte dynamiquement des adresses IP aux périphériques terminaux et intermédiaires"], w: ["Une application qui permet les discussions en ligne en temps réel", "Permet l'accès à distance aux périphériques", "Utilise le chiffrement pour fournir un accès distant sécurisé"]},
+            {q: "Le bloc d'adresses IPv6 2001:db8:0:ca00::/56 est attribué à une organisation. Combien de sous-réseaux peuvent être créés sans utiliser de bits dans l'espace d'ID d'interface?", a: ["256"], w: ["512", "4 096", "1 024"]},
+            {q: "Un technicien utilise plusieurs applications sur un ordinateur connecté à Internet. Comment l'ordinateur peut-il suivre le flux de données entre plusieurs sessions d'application?", a: ["Le suivi du flux de données se fait selon le numéro de port source utilisé par chaque application"], w: ["Le suivi se fait selon l'adresse MAC de destination", "Le suivi se fait selon l'adresse IP de destination", "Le suivi se fait selon l'adresse IP source"]},
+            {q: "Pourquoi un commutateur de couche 2 nécessite-t-il une adresse IP?", a: ["Pour permettre au commutateur d'être géré à distance"], w: ["Pour permettre au commutateur d'envoyer des trames de diffusion vers des PC connectés", "Pour permettre au commutateur de fonctionner en tant que passerelle par défaut", "Pour permettre au commutateur de recevoir des trames provenant de PC connectés"]},
+            {q: "De quel type de menace à la sécurité parle-t-on lorsqu'un tableur exécuté en tant que logiciel complémentaire désactive le pare-feu logiciel local?", a: ["cheval de Troie"], w: ["dépassement de mémoire tampon", "DoS", "attaques en force"]},
+            {q: "Quelle est l'une des principales caractéristiques de la couche de liaison de données?", a: ["Il empêche le protocole de couche supérieur de connaître le support physique à utiliser dans la communication"], w: ["Il convertit un flux de bits de données en un code prédéfini", "Il accepte les paquets de la couche 3 et décide du chemin", "La couche physique doit générer les signaux électriques"]},
+            {q: "Quel est le caractère d'un NIC qui le mettrait au niveau de la couche de liaison de données du modèle OSI?", a: ["Adresse MAC"], w: ["Raccordez le câble Ethernet", "La pile de protocoles TCP/IP", "Adresse IP", "Port RJ-45"]},
+            {q: "Deux requêtes ping ont été exécutées depuis un hôte sur un réseau local. La première requête ping a été exécutée sur l'adresse IP de la passerelle par défaut et elle a échoué. La deuxième requête ping a été exécutée sur l'adresse IP d'un hôte situé en dehors du réseau local et elle a abouti. Quelle est la cause probable de l'échec?", a: ["Des règles de sécurité sont appliquées à la passerelle par défaut, ce qui l'empêche de traiter les requêtes ping"], w: ["La passerelle par défaut est configurée avec une adresse IP incorrecte", "La passerelle par défaut n'est pas opérationnelle", "La pile TCP/IP sur la passerelle par défaut ne fonctionne pas correctement"]},
+            {q: "Un technicien en réseau étudie l'utilisation du câblage à fibre optique dans un nouveau centre technologique. Quels deux problèmes devraient être pris en compte avant de mettre en œuvre des supports à fibres optiques?", a: ["La fibre optique fournit une capacité de données plus élevée mais est plus coûteuse que le câblage en cuivre", "Le câblage à fibres optiques nécessite une expertise différente en matière de terminaison"], w: ["Le câble à fibre optique est capable de résister à une manipulation rugueuse", "Le câblage à fibre optique est sensible à la perte de signal grâce au RFI", "Le câblage à fibre optique nécessite une mise à la terre spécifique"]},
+            {q: "Que se passe-t-il lorsque la commande transport input ssh est entrée sur les lignes vty du switch?", a: ["La communication entre le commutateur et les utilisateurs distants est cryptée"], w: ["Le commutateur nécessite une combinaison nom d'utilisateur/mot de passe", "Le client SSH sur le commutateur est activé", "Le commutateur nécessite des connexions à distance via un logiciel client propriétaire"]},
+            {q: "Lorsque la configuration d'un commutateur comprend un seuil d'erreur défini par l'utilisateur pour chaque port, à quelle méthode de commutation le commutateur revient-il si le seuil est atteint?", a: ["store-and-forward"], w: ["fragment-free", "cut-through", "fast-forward"]},
+            {q: "Quels sont les deux types de trafic qui utilisent le protocole RTP (Real-Time Transport Protocol)?", a: ["Voix", "Vidéo"], w: ["P2P (peer-to-peer)", "transfert de fichier", "Web"]},
+            {q: "Quels sont les deux messages ICMPv6 qui ne sont pas présents dans ICMP pour IPv4?", a: ["Sollicitation de voisin", "Annonce de routeur"], w: ["Destination injoignable", "Confirmation de l'hôte", "Redirection de la route", "Dépassement du délai"]},
+            {q: "Quel service est fourni par SMTP?", a: ["Permet aux clients d'envoyer des courriels à un serveur de messagerie et aux serveurs d'envoyer des courriels à d'autres serveurs"], w: ["Permet l'accès à distance aux périphériques", "Une application qui permet les discussions en ligne en temps réel", "Utilise le chiffrement pour fournir un accès distant sécurisé"]},
+            {q: "Quels sont les deux messages ICMPv6 qui doivent être autorisés par les listes de contrôle d'accès IPv6 pour permettre la résolution des adresses de couche 3 en adresses MAC de couche 2?", a: ["Sollicitation de voisin", "Annonce de voisin"], w: ["une requête d'écho", "une réponse d'écho", "Annonce de routeur", "Sollicitation de routeur"]},
+            {q: "Un administrateur réseau cherche à préserver la confidentialité de l'ID utilisateur, du mot de passe et du contenu des sessions lorsqu'il configure une connexion distante CLI gérée par un commutateur. Quel est le mode d'accès le plus approprié?", a: ["SSH"], w: ["AUX", "Console", "Telnet"]},
+            {q: "Un serveur reçoit un paquet client. Le numéro de port de destination du paquet est 110. Quelle application de service le client demande-t-il?", a: ["POP3"], w: ["SMTP", "DHCP", "DNS"]},
+            {q: "Quelles sont les deux fonctions exécutées sur la sous-couche LLC de la couche de liaison de données OSI pour faciliter la communication Ethernet?", a: ["Place les informations dans la trame qui indique le protocole de couche réseau encapsulé", "intègre des flux de couche 2 entre 10 Gigabit Ethernet sur fibre et 1 Gigabit Ethernet sur cuivre"], w: ["applique les adresses MAC source et destination", "implémente CSMA/CD", "ajoute des informations de contrôle Ethernet"]},
+            {q: "Quelles sont les deux méthodes les plus efficaces pour la protection contre les programmes malveillants?", a: ["Installer et mettre à jour un logiciel antivirus", "Mettre à jour le système d'exploitation et d'autres logiciels d'application"], w: ["Implémenter RAID", "Implémenter des mots de passe forts", "Implémenter des pare-feu réseau", "Implémenter un VPN"]},
+            {q: "Un utilisateur envoie une requête HTTP à un serveur Web sur un réseau distant. Pendant l'encapsulation de cette requête, quelles informations sont ajoutées au champ d'adresse d'une trame pour indiquer la destination?", a: ["L'adresse MAC de la passerelle par défaut"], w: ["L'adresse MAC de l'hôte de destination", "Le domaine réseau de l'hôte de destination", "L'adresse IP de la passerelle par défaut"]},
+            {q: "Un serveur reçoit un paquet client. Le numéro de port de destination du paquet est 21. Quelle application de service le client demande-t-il?", a: ["FTP"], w: ["DHCP", "SSH", "TFTP"]},
+            {q: "Quel service est fourni par POP3?", a: ["Récupère le courrier électronique à partir du serveur en téléchargeant le courrier électronique vers l'application de messagerie locale du client"], w: ["Une application qui permet de chatter en temps réel", "Utilise le chiffrement pour fournir un accès distant sécurisé", "Permet l'accès à distance aux périphériques"]},
+            {q: "Quel masque de sous-réseau faut-il utiliser si un réseau IPv4 comporte 40 terminaux nécessitant des adresses IP et que l'on veut éviter de gaspiller l'espace d'adressage?", a: ["255.255.255.192"], w: ["255.255.255.0", "255.255.255.240", "255.255.255.128", "255.255.255.224"]},
+            {q: "Un serveur reçoit un paquet client. Le numéro de port de destination du paquet est 80. Quelle application de service le client demande-t-il?", a: ["HTTP"], w: ["SMTP", "DNS", "DHCP"]},
+            {q: "Un administrateur réseau ajoute un nouveau réseau local à une filiale. Le nouveau réseau local doit prendre en charge 10 périphériques connectés. Quel est le plus petit masque réseau?", a: ["255.255.255.240"], w: ["255.255.255.248", "255.255.255.224", "255.255.255.192"]},
+            {q: "Quel avantage présente l'utilisation d'un protocole défini par une norme ouverte?", a: ["Il favorise la compétitivité et permet de choisir"], w: ["Une entreprise peut avoir le monopole sur le marché", "Un protocole à norme ouverte n'est ni contrôlé ni régulé", "Le protocole peut être exécuté uniquement sur un équipement d'un fournisseur particulier"]},
+            {q: "Quelles sont les deux principales responsabilités de la sous-couche MAC Ethernet?", a: ["Délimitation des trames", "accès aux supports"], w: ["Adressage logique", "Détection des erreurs", "L'encapsulation de données"]},
+            {q: "Une imprimante laser filaire est connectée à un ordinateur domestique. Elle a été partagée pour que d'autres ordinateurs appartenant au réseau domestique puissent également l'utiliser. Quel est le modèle de réseau suivi?", a: ["Peer-to-peer (P2P)"], w: ["Basé sur un client", "Maître-esclave", "Point à point"]},
+            {q: "Au cours du processus de transfert du trafic, que fait le routeur immédiatement après avoir fait correspondre l'adresse IP de destination à un réseau dans une entrée de table de routage connectée directement?", a: ["Commuter le paquet vers l'interface directement connectée"], w: ["Ignorer le trafic après avoir consulté la table de routage", "Rechercher l'adresse de tronçon suivant pour le paquet", "Analyser l'adresse IP de destination"]},
+            {q: "Quelles sont les trois parties d'une adresse de monodiffusion globale IPv6?", a: ["ID de sous-réseau", "préfixe de routage global", "ID d'interface"], w: ["masque de sous-réseau", "adresse de diffusion"]},
+            {q: "Quelle couche du modèle TCP/IP fournit un chemin pour transférer des messages via un interréseau?", a: ["internet"], w: ["application", "transport", "accès réseau"]},
+            {q: "Quelle caractéristique décrit le vol d'identité?", a: ["l'utilisation d'identifiants volés pour accéder à des données privées"], w: ["logiciel sur un routeur qui filtre le trafic", "logiciel qui identifie les menaces à propagation rapide", "un protocole de tunneling"]},
+            {q: "Un administrateur réseau ajoute un nouveau réseau local à une succursale. Le nouveau LAN doit prendre en charge 90 appareils connectés. Quel est le plus petit masque de réseau?", a: ["255.255.255.128"], w: ["255.255.255.240", "255.255.255.248", "255.255.255.224"]},
+            {q: "Quel service est fourni par HTTP?", a: ["Un ensemble de règles de base pour l'échange de texte, d'images graphiques, de sons, de vidéos et d'autres fichiers multimédias sur le Web"], w: ["Utilise le cryptage pour sécuriser l'échange", "Permet les transferts de données entre un client et un serveur", "Une application qui permet de discuter en temps réel"]},
+            {q: "Un paquet client est reçu par un serveur. Le paquet a un numéro de port de destination de 67. Quel service le client demande-t-il?", a: ["DHCP"], w: ["FTP", "Telnet", "SSH"]},
+            {q: "Quelle caractéristique décrit l'antispyware?", a: ["applications qui protègent les terminaux contre l'infection par des logiciels malveillants"], w: ["un appareil réseau qui filtre l'accès", "logiciel sur un routeur qui filtre le trafic", "un protocole de tunneling"]},
+            {q: "Quelles sont les deux solutions de sécurité les plus susceptibles d'être utilisées uniquement dans un environnement d'entreprise?", a: ["réseaux privés virtuels", "systèmes de prévention des intrusions"], w: ["antispyware", "mots de passe forts", "logiciel antivirus"]},
+            {q: "Quelle caractéristique décrit un logiciel antivirus?", a: ["applications qui protègent les terminaux contre l'infection par des logiciels malveillants"], w: ["un appareil réseau qui filtre l'accès", "un protocole de tunneling", "logiciel sur un routeur qui filtre le trafic"]},
+            {q: "Quelle caractéristique décrit un logiciel espion?", a: ["logiciel installé sur l'appareil de l'utilisateur et collectant des informations sur l'utilisateur"], w: ["un appareil réseau qui filtre l'accès", "une attaque qui ralentit ou bloque un appareil", "l'utilisation d'identifiants volés"]},
+            {q: "Quel service est fourni par FTP?", a: ["Permet les transferts de données entre un client et un serveur de fichiers"], w: ["Un ensemble de règles de base pour l'échange de texte", "Une application qui permet de discuter en temps réel", "Utilise le chiffrement pour sécuriser l'échange"]},
+            {q: "Quel service est fourni par BOOTP?", a: ["Application héritée qui permet à un poste de travail sans disque de découvrir sa propre adresse IP et de trouver un serveur BOOTP sur le réseau"], w: ["Utilise le chiffrement pour sécuriser l'échange", "Permet les transferts de données", "Un ensemble de règles de base"]},
+            {q: "Quelle caractéristique décrit un logiciel publicitaire?", a: ["logiciel installé sur l'appareil de l'utilisateur et collectant des informations sur l'utilisateur"], w: ["un appareil réseau qui filtre l'accès", "l'utilisation d'identifiants volés", "une attaque qui ralentit ou bloque"]},
+            {q: "Quelle caractéristique décrit un VPN?", a: ["un protocole de tunnel qui fournit aux utilisateurs distants un accès sécurisé au réseau d'une organisation"], w: ["logiciel sur un routeur qui filtre le trafic", "logiciel qui identifie les menaces", "un appareil réseau qui filtre l'accès"]},
+            {q: "Un paquet client est reçu par un serveur. Le paquet a un numéro de port de destination de 143. Quel service le client demande-t-il?", a: ["IMAP"], w: ["FTP", "SSH", "Telnet"]},
+            {q: "Un utilisateur exécute un tracert sur un périphérique distant. À quel moment un routeur, qui se trouve sur le chemin de l'appareil de destination, arrêterait-il de transférer le paquet?", a: ["lorsque la valeur du champ TTL atteint zéro"], w: ["lorsque le routeur reçoit un message ICMP Time Exceeded", "lorsque la valeur RTT atteint zéro", "lorsque l'hôte répond avec un message ICMP Echo Reply"]},
+            {q: "Un paquet client est reçu par un serveur. Le paquet a un numéro de port de destination de 53. Quel service le client demande-t-il?", a: ["DNS"], w: ["NetBIOS (NetBT)", "POP3", "IMAP"]},
+            {q: "Un administrateur réseau ajoute un nouveau réseau local. Le nouveau LAN doit prendre en charge 25 appareils connectés. Quel est le plus petit masque de réseau?", a: ["255.255.255.224"], w: ["255.255.255.128", "255.255.255.192", "255.255.255.240"]},
+            {q: "Quelle caractéristique décrit une attaque DoS?", a: ["une attaque qui ralentit ou bloque un appareil ou un service réseau"], w: ["l'utilisation d'identifiants volés", "un appareil réseau qui filtre l'accès", "logiciel installé sur l'appareil"]},
+            {q: "Quelle caractéristique décrit un IPS?", a: ["logiciel qui identifie les menaces à propagation rapide"], w: ["un protocole de tunneling", "un appareil réseau qui filtre l'accès", "logiciel sur un routeur qui filtre le trafic"]},
+            {q: "Quelle technologie sans fil a des exigences de faible consommation et de faible débit de données, ce qui la rend populaire dans les environnements IoT?", a: ["Zigbee"], w: ["Bluetooth", "WiMAX", "Wi-Fi"]},
+            {q: "Quel est l'ID de sous-réseau associé à l'adresse IPv6 2001:DA48:FC5:A4:3D1B::1/64?", a: ["2001:DA48:FC5:A4::/64"], w: ["2001:DA48::/64", "2001:DA48:FC5::A4:/64", "2001::/64"]}
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let selectedAnswer = null;
+        let answered = false;
+
+        function startQuiz(start, end) {
+            currentQuestions = questions.slice(start - 1, end);
+            currentIndex = 0;
+            score = 0;
+            answered = false;
+            
+            document.getElementById('menuScreen').style.display = 'none';
+            document.getElementById('quizScreen').style.display = 'block';
+            document.getElementById('total').textContent = currentQuestions.length;
+            document.getElementById('totalQ').textContent = currentQuestions.length;
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            answered = false;
+            selectedAnswer = null;
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('validateBtn').style.display = 'block';
+            document.getElementById('skipBtn').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            const q = currentQuestions[currentIndex];
+            let allAnswers = [...q.a, ...q.w];
+            shuffleArray(allAnswers);
+            
+            let html = `<div class="question-text"><strong>Question ${currentIndex + 1}:</strong> ${q.q}</div>`;
+            
+            allAnswers.forEach((answer, idx) => {
+                html += `<div class="answer-option" onclick="selectAnswer(${idx}, this)">
+                    <input type="${q.a.length > 1 ? 'checkbox' : 'radio'}" name="answer" id="ans${idx}">
+                    <label for="ans${idx}">${answer}</label>
+                </div>`;
+            });
+            
+            document.getElementById('questionCard').innerHTML = html;
+            document.getElementById('currentQ').textContent = currentIndex + 1;
+            document.getElementById('score').textContent = score;
+            
+            updateProgress();
+        }
+
+        function selectAnswer(idx, element) {
+            if (answered) return;
+            
+            const q = currentQuestions[currentIndex];
+            const options = document.querySelectorAll('.answer-option');
+            
+            if (q.a.length > 1) {
+                element.classList.toggle('selected');
+                const checkbox = element.querySelector('input');
+                checkbox.checked = !checkbox.checked;
+            } else {
+                options.forEach(opt => opt.classList.remove('selected'));
+                document.querySelectorAll('input[name="answer"]').forEach(inp => inp.checked = false);
+                element.classList.add('selected');
+                element.querySelector('input').checked = true;
+            }
+        }
+
+        function validateAnswer() {
+            const q = currentQuestions[currentIndex];
+            const selectedOptions = document.querySelectorAll('.answer-option.selected');
+            
+            if (selectedOptions.length === 0) {
+                alert('Veuillez sélectionner une réponse!');
+                return;
+            }
+            
+            answered = true;
+            let isCorrect = true;
+            const selectedAnswers = [];
+            
+            selectedOptions.forEach(opt => {
+                const label = opt.querySelector('label').textContent;
+                selectedAnswers.push(label);
+            });
+            
+            if (selectedAnswers.length !== q.a.length) {
+                isCorrect = false;
+            } else {
+                selectedAnswers.forEach(ans => {
+                    if (!q.a.includes(ans)) isCorrect = false;
+                });
+            }
+            
+            document.querySelectorAll('.answer-option').forEach(opt => {
+                const label = opt.querySelector('label').textContent;
+                if (q.a.includes(label)) {
+                    opt.classList.add('correct');
+                } else if (opt.classList.contains('selected')) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            if (isCorrect) {
+                score++;
+                document.getElementById('score').textContent = score;
+                document.getElementById('feedback').className = 'feedback correct';
+                document.getElementById('feedback').textContent = '✓ Correct!';
+            } else {
+                document.getElementById('feedback').className = 'feedback incorrect';
+                document.getElementById('feedback').textContent = '✗ Incorrect. La bonne réponse est: ' + q.a.join(', ');
+            }
+            
+            document.getElementById('feedback').style.display = 'block';
+            document.getElementById('validateBtn').style.display = 'none';
+            document.getElementById('skipBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function skipQuestion() {
+            answered = true;
+            const q = currentQuestions[currentIndex];
+            
+            document.querySelectorAll('.answer-option').forEach(opt => {
+                const label = opt.querySelector('label').textContent;
+                if (q.a.includes(label)) {
+                    opt.classList.add('correct');
+                }
+            });
+            
+            document.getElementById('feedback').className = 'feedback incorrect';
+            document.getElementById('feedback').textContent = '⊘ Question passée. La bonne réponse était: ' + q.a.join(', ');
+            document.getElementById('feedback').style.display = 'block';
+            document.getElementById('validateBtn').style.display = 'none';
+            document.getElementById('skipBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            
+            if (currentIndex >= currentQuestions.length) {
+                showResults();
+            } else {
+                showQuestion();
+            }
+        }
+
+        function showResults() {
+            const percentage = ((score / currentQuestions.length) * 100).toFixed(1);
+            let message = '';
+            
+            if (percentage >= 80) {
+                message = '🎉 Excellent! Vous êtes prêt pour l\'examen!';
+            } else if (percentage >= 60) {
+                message = '👍 Bon travail! Continuez à réviser.';
+            } else {
+                message = '📚 Continuez à étudier. Vous y arriverez!';
+            }
+            
+            document.getElementById('questionCard').innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <h2 style="color: #2a5298; margin-bottom: 20px;">Quiz terminé!</h2>
+                    <div style="font-size: 3em; color: #667eea; margin: 20px 0;">${percentage}%</div>
+                    <div style="font-size: 1.5em; margin: 20px 0;">Score: ${score}/${currentQuestions.length}</div>
+                    <div style="font-size: 1.2em; color: #555; margin: 20px 0;">${message}</div>
+                    <button class="btn btn-primary" onclick="location.reload()" style="margin: 10px;">Recommencer ce quiz</button>
+                    <button class="btn btn-secondary" onclick="showMenu()" style="margin: 10px;">Retour au menu</button>
+                </div>
+            `;
+            document.getElementById('feedback').style.display = 'none';
+            document.querySelector('.quiz-controls').style.display = 'none';
+        }
+
+        function showMenu() {
+            document.getElementById('menuScreen').style.display = 'grid';
+            document.getElementById('quizScreen').style.display = 'none';
+            document.querySelector('.quiz-controls').style.display = 'flex';
+        }
+
+        function updateProgress() {
+            const progress = ((currentIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+    </script>
+</body>
+</html>
